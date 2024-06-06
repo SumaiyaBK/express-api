@@ -3,11 +3,30 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose'); 
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
 var app = express();
+
+
+// Connect to MongoDB
+const dbUrl = 'mongodb://admin:admin@mongodb:27017/mydb';
+mongoose.connect(dbUrl)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((error) => console.error('MongoDB connection error:', error));
+
+// Create a basic blog post model
+const Schema = mongoose.Schema;
+const blogPostSchema = new Schema({
+  title: String,
+  content: String,
+  date: { type: Date, default: Date.now }
+});
+
+const BlogPost = mongoose.model('BlogPost', blogPostSchema);
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

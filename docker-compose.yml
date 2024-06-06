@@ -1,14 +1,14 @@
+version: "3.8"
+
 services:
   mongodb:
     image: mongo:latest
     container_name: mongodb
     restart: always
     environment:
-      - MONGODB_HOST=mongodb
-      - MONGODB_PORT=27017
-      - MONGODB_DB=mydb
-      - MONGODB_USERNAME=admin
-      - MONGODB_PASSWORD=admin
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=mydb
     ports:
       - "27017:27017"
     volumes:
@@ -25,3 +25,14 @@ services:
       - ME_CONFIG_BASICAUTH_PASSWORD=admin
     depends_on:
       - mongodb
+
+  express-app:
+    build: .
+    container_name: express-app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+    environment:
+      - DB_URL=mongodb://admin:admin@mongodb:27017/mydb?authSource=admin
